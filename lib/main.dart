@@ -60,7 +60,6 @@ class _LoginScreenState extends State<LoginScreen>{
         'password': password,
       }
     );
-    print(response.body);
     if(response.body == "-1"){
       showToast(context,1);
     }else{
@@ -94,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen>{
         'password': password,
       }
     );
-    print(response.body);
     Navigator.pushNamed(
       context,
       '/notesPage',

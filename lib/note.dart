@@ -31,31 +31,31 @@ class NoteData{
 
 
 class _NotePage extends State<NotePage>{
-  var noteID = "-1";
+  var noteID = "-2";
   var author = "-1";
   NoteData note = new NoteData();
   String urlNote = "https://buldu-note.herokuapp.com/users/note";
-  //String urlNote = "http://localhost:3000/users/note";
   String urlNoteEdit = "https://buldu-note.herokuapp.com/users/noteEdit";
-  //String urlNoteEdit = "http://localhost:3000/users/noteEdit";
   String urlNoteAdd = "https://buldu-note.herokuapp.com/users/noteAdd";
-  //String urlNoteAdd = "http://localhost:3000/users/noteAdd";
 
-
+  final textTitle = new TextEditingController();
+  final textNote = new TextEditingController();
 
   postNote() async {
-    final http.Response response = await http.post(
+    await http.post(
       urlNote,
       body: {
         'id': noteID
       }
-    );  
-    final parsed = jsonDecode(response.body);
-    NoteData data = NoteData.fromJson(parsed);
-    setState(() {
-      note = data;
-    });
-    print(author + "author");
+    ).then((value) {
+      final parsed = jsonDecode(value.body);
+      NoteData data = NoteData.fromJson(parsed);
+      setState(() {
+        note = data;
+        textTitle.text = note.title;
+        textNote.text = note.text;
+      });
+    });  
   }
 
   onTitleType(String value){
@@ -95,20 +95,19 @@ class _NotePage extends State<NotePage>{
       Navigator.pop(context);
     });
   }
-  
-  
+
+
   @override
   Widget build(BuildContext context) {
-    final NoteArg args = ModalRoute.of(context).settings.arguments;
-    noteID = args.noteID;
-    author = args.authorID;
-    final textTitle = new TextEditingController();
-    final textNote = new TextEditingController();
-    if(note.id == null && noteID != "-1")postNote();
-    setState(() {
-      textTitle.text = note.title;
-      textNote.text = note.text;
-    });
+    if(noteID == "-2"){
+      final NoteArg args = ModalRoute.of(context).settings.arguments;
+      noteID = args.noteID;
+      author = args.authorID;
+    }
+    if(note.id == null && noteID != "-1"){      
+      postNote();
+    }
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Note"),
